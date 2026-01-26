@@ -14,8 +14,11 @@ struct Taskboard_1App: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            let context = persistenceController.container.viewContext
+            let dateHolder = DateHolder(context)
+            TaskListView()
+                .environment(\.managedObjectContext, persistenceController.container.viewContext )
+                .environmentObject(dateHolder)
         }
     }
 }
