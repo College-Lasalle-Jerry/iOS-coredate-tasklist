@@ -13,17 +13,22 @@ struct FloatingActionButton: View {
     
     
     var body: some View {
-        Spacer()
-        HStack{
-            // navigation link to the task edit/create screen
-            NavigationLink(
-                destination: TaskEditView(passedTaskItem: nil, initialDate: Date())
-                    .environmentObject(dateHolder)
-            ) {
-                Text("New Task")
-                    .font(.title2)
-                    .padding()
-                    .foregroundStyle(.blue)
+        VStack{
+            Spacer()
+            HStack{
+                Spacer()
+                HStack{
+                    // navigation link to the task edit/create screen
+                    NavigationLink(
+                        destination: TaskEditView(passedTaskItem: nil, initialDate: Date())
+                            .environmentObject(dateHolder)
+                    ) {
+                        Text("New Task")
+                            .font(.title2)
+                            .padding()
+                            .foregroundStyle(.blue)
+                    }
+                }
             }
         }
     }

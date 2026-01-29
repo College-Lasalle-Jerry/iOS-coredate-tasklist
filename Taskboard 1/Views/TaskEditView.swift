@@ -58,6 +58,19 @@ struct TaskEditView: View {
                 
             }
             
+            
+            if selectedTaskItem?.isCompleted() ?? false {
+                Section(header: Text("Completed")) {
+                    Text(
+                        selectedTaskItem?.completedDate?.formatted(
+                            date: .abbreviated,
+                            time: .shortened
+                        ) ?? ""
+                    )
+                    .foregroundStyle(.green)
+                }
+            }
+            
             Section {
                 Button(action: saveAction) {
                     Text("Save")
@@ -84,6 +97,7 @@ struct TaskEditView: View {
             selectedTaskItem?.id = UUID()
             selectedTaskItem?.created = Date()
             selectedTaskItem?.name = name
+            selectedTaskItem?.desc = desc
             selectedTaskItem?.dueDate = dueDate
             selectedTaskItem?.scheduleTime = scheduleTime
             

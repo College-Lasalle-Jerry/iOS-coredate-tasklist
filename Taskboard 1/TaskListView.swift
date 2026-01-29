@@ -14,55 +14,95 @@ struct TaskListView: View {
     // context for the save
     @EnvironmentObject var dateHolder: DateHolder
     
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \TaskItem.created, ascending: true)],
-        animation: .default)
     
-    private var items: FetchedResults<TaskItem>
+    //    @FetchRequest(
+    //        sortDescriptors: [NSSortDescriptor(keyPath: \TaskItem.created, ascending: true)],
+    //        animation: .default)
+    //
+    //    private var items: FetchedResults<TaskItem>
     
-
+    @State var selectedFilter = TaskFilter.NonCompleted
+    
     var body: some View {
         NavigationView {
             VStack{
-
+                DateScroller()
+                    .padding( )
+                    .environmentObject(dateHolder)
+                
                 ZStack{
                     
                     List {
-                        ForEach(items) { item in
+                        ForEach(filteredTaskItems()) { item in
                             
-                            NavigationLink(item.name ?? "", destination: TaskEditView(passedTaskItem: item, initialDate: item.created!)
-                                .environmentObject(dateHolder)
                             
-                            )
+                            NavigationLink(
+                                destination:
+                                    TaskEditView(passedTaskItem: item, initialDate: item.created!)
+                                    .environmentObject(dateHolder)
+                            ) {
+                                TaskCell(passedSelectedItem: item)
+                                    .environmentObject(dateHolder)
+                            }
                             
-                                                        
+                            
+                            
+                            
                         }
                         .onDelete(perform: deleteItems)
                     }
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
-                            EditButton()
+                            //                            EditButton()
+                            
+                            Picker("", selection: $selectedFilter.animation())
+                            {
+                                ForEach(TaskFilter.allFilters, id: \.self)
+                                {
+                                    filter in
+                                    Text(filter.rawValue)
+                                }
+                            }
                         }
                     } // end of toolbar, end of list.
                     
                     
                     FloatingActionButton()
                         .environmentObject(dateHolder)
-
+                    
                 }
             }
             .navigationTitle("Task Items")
         }
         
     }
-
-
+    
+    private func filteredTaskItems() -> [TaskItem]
+    {
+        if selectedFilter == TaskFilter.Completed
+        {
+            return dateHolder.taskItems.filter{ $0.isCompleted()}
+        }
+        
+        if selectedFilter == TaskFilter.NonCompleted
+        {
+            return dateHolder.taskItems.filter{ !$0.isCompleted()}
+        }
+        
+        if selectedFilter == TaskFilter.OverDue
+        {
+            return dateHolder.taskItems.filter{ $0.isOverdue()}
+        }
+        
+        return dateHolder.taskItems
+    }
+    
+    
     
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
+            offsets.map { dateHolder.taskItems[$0] }.forEach(viewContext.delete)
+            
             dateHolder.saveContext(viewContext)
         }
     }
