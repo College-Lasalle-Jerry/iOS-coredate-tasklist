@@ -87,25 +87,60 @@ struct TaskEditView: View {
     
     // save button functionality.
     
+//    func saveAction() {
+//        withAnimation {
+//            if selectedTaskItem == nil {
+//                let newItem = TaskItem(context: viewContext)
+//                newItem.created = Date()
+//                selectedTaskItem = newItem
+//            }
+//
+//            selectedTaskItem?.name = name
+//            selectedTaskItem?.desc = desc
+//            selectedTaskItem?.dueDate = dueDate
+//            selectedTaskItem?.scheduleTime = scheduleTime
+//            
+//            dateHolder.saveContext(viewContext)
+//            
+//            // dismiss
+//            presentationMode.wrappedValue.dismiss() // this will dismiss the screen
+//            
+//        }
+//    }
+    
+    
     func saveAction() {
         withAnimation {
             if selectedTaskItem == nil {
                 let newItem = TaskItem(context: viewContext)
+                newItem.id = UUID()
                 newItem.created = Date()
                 selectedTaskItem = newItem
             }
-            selectedTaskItem?.id = UUID()
-            selectedTaskItem?.created = Date()
+
+            if selectedTaskItem?.id == nil {
+                selectedTaskItem?.id = UUID()
+            }
+
+            if selectedTaskItem?.created == nil {
+                selectedTaskItem?.created = Date()
+            }
+
+            let finalDueDate: Date
+            if scheduleTime {
+                finalDueDate = dueDate
+            } else {
+                finalDueDate = Calendar.current.startOfDay(for: dueDate)
+            }
+
+            print("\(selectedTaskItem?.id)")
             selectedTaskItem?.name = name
             selectedTaskItem?.desc = desc
-            selectedTaskItem?.dueDate = dueDate
+            selectedTaskItem?.dueDate = finalDueDate
             selectedTaskItem?.scheduleTime = scheduleTime
-            
+
             dateHolder.saveContext(viewContext)
-            
-            // dismiss
-            presentationMode.wrappedValue.dismiss() // this will dismiss the screen
-            
+            presentationMode.wrappedValue.dismiss()
         }
     }
 }

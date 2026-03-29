@@ -16,11 +16,11 @@ struct CheckBoxView: View {
     @ObservedObject var passedSelectedItem: TaskItem
     
     var body: some View {
-        Image(systemName: passedSelectedItem.completedDate != nil  ? "checkmark.circle.fill" : "circle")
+        Image(systemName: passedSelectedItem.isCompleted()  ? "checkmark.circle.fill" : "circle")
             .foregroundStyle(passedSelectedItem.isCompleted() ? .green : .secondary)
             .onTapGesture {
                 withAnimation {
-                    print("on tap gesture")
+                    print("on tap gesture \(passedSelectedItem.isCompleted())")
                     if !passedSelectedItem.isCompleted() {
                         passedSelectedItem.completedDate = Date()
                         dateHolder.saveContext(viewContext)

@@ -99,10 +99,12 @@ struct TaskListView: View {
     
     
     
+    
+    
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { dateHolder.taskItems[$0] }.forEach(viewContext.delete)
-            
+            let current = filteredTaskItems()
+            offsets.map { current[$0] }.forEach(viewContext.delete)
             dateHolder.saveContext(viewContext)
         }
     }
